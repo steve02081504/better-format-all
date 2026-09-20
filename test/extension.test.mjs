@@ -9,7 +9,7 @@ import * as vscode from 'vscode'
 
 import { removeDir } from './helpers.mjs'
 
-const FORMAT_ALL_COMMAND = 'formatAll.formatFolder'
+const BETTER_FORMAT_ALL_COMMAND = 'betterFormatAll.formatFolder'
 
 /**
  * 同步运行一条 git 命令。
@@ -33,15 +33,15 @@ function fullRange(document) {
 	return new vscode.Range(new vscode.Position(0, 0), document.lineAt(lastLine).range.end)
 }
 
-suite('format-all extension', () => {
+suite('better-format-all extension', () => {
 	suiteSetup(async () => {
-		const extension = vscode.extensions.all.find((candidate) => candidate.packageJSON.name === 'format-all')
+		const extension = vscode.extensions.all.find((candidate) => candidate.packageJSON.name === 'better-format-all')
 		if (extension && !extension.isActive) await extension.activate()
 	})
 
 	test('formats changed and untracked files with the default formatter and records the baseline', async function () {
 		this.timeout(120000)
-		const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'format-all-ext-'))
+		const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'better-format-all-ext-'))
 		// 用一个只对本测试生效的格式化器（大写整篇文档），等价于用户为该语言配置的默认格式化器。
 		const registration = vscode.languages.registerDocumentFormattingEditProvider({ language: 'plaintext' }, {
 			/**
@@ -60,7 +60,7 @@ suite('format-all extension', () => {
 		try {
 			git(dir, 'init', '-q')
 			git(dir, 'config', 'user.email', 'test@example.com')
-			git(dir, 'config', 'user.name', 'format-all tests')
+			git(dir, 'config', 'user.name', 'better-format-all tests')
 			git(dir, 'config', 'commit.gpgsign', 'false')
 			fs.writeFileSync(path.join(dir, '.gitignore'), 'ignored/\n')
 			fs.writeFileSync(path.join(dir, 'a.txt'), 'hello')
@@ -74,14 +74,14 @@ suite('format-all extension', () => {
 			fs.mkdirSync(path.join(dir, 'ignored'))
 			fs.writeFileSync(path.join(dir, 'ignored', 'i.txt'), 'keep me')
 
-			await vscode.commands.executeCommand(FORMAT_ALL_COMMAND, vscode.Uri.file(dir))
+			await vscode.commands.executeCommand(BETTER_FORMAT_ALL_COMMAND, vscode.Uri.file(dir))
 
 			assert.strictEqual(fs.readFileSync(path.join(dir, 'a.txt'), 'utf8'), 'HELLO')
 			assert.strictEqual(fs.readFileSync(path.join(dir, 'sub', 'b.txt'), 'utf8'), 'WORLD')
 			assert.strictEqual(fs.readFileSync(path.join(dir, 'untracked.txt'), 'utf8'), 'CAP ME')
 			assert.strictEqual(fs.readFileSync(path.join(dir, 'ignored', 'i.txt'), 'utf8'), 'keep me')
 
-			const stateFile = path.join(dir, '.git', 'format-all.json')
+			const stateFile = path.join(dir, '.git', 'better-format-all.json')
 			assert.strictEqual(fs.existsSync(stateFile), true)
 			const state = JSON.parse(fs.readFileSync(stateFile, 'utf8'))
 			assert.strictEqual(state.version, 1)
@@ -97,7 +97,7 @@ suite('format-all extension', () => {
 			}
 
 			// 第二次运行：内容已是最终形态，格式化器返回空编辑，磁盘内容保持不变。
-			await vscode.commands.executeCommand(FORMAT_ALL_COMMAND, vscode.Uri.file(dir))
+			await vscode.commands.executeCommand(BETTER_FORMAT_ALL_COMMAND, vscode.Uri.file(dir))
 			assert.strictEqual(fs.readFileSync(path.join(dir, 'a.txt'), 'utf8'), 'HELLO')
 			assert.deepStrictEqual(JSON.parse(fs.readFileSync(stateFile, 'utf8')).subpaths, { '': head })
 		}
@@ -109,10 +109,10 @@ suite('format-all extension', () => {
 	})
 
 	test('warns instead of throwing outside a git repository', async () => {
-		const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'format-all-ext-norepo-'))
+		const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'better-format-all-ext-norepo-'))
 		try {
 			// 不是仓库时不抛错，也不写任何文件。
-			await vscode.commands.executeCommand(FORMAT_ALL_COMMAND, vscode.Uri.file(dir))
+			await vscode.commands.executeCommand(BETTER_FORMAT_ALL_COMMAND, vscode.Uri.file(dir))
 			assert.strictEqual(fs.existsSync(path.join(dir, '.git')), false)
 		}
 		finally {

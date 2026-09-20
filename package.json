@@ -1,18 +1,18 @@
 {
-	"name": "format-all",
-	"displayName": "Format All",
+	"name": "better-format-all",
+	"displayName": "Better Format All",
 	"description": "Format every git-tracked or uncommitted file under a folder with its default formatter, remembering the last fully formatted commit per sub-path.",
 	"version": "0.0.1",
 	"publisher": "steve02081504",
 	"license": "LGPL-3.0-only",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/steve02081504/format-all.git"
+		"url": "https://github.com/steve02081504/better-format-all.git"
 	},
 	"bugs": {
-		"url": "https://github.com/steve02081504/format-all/issues"
+		"url": "https://github.com/steve02081504/better-format-all/issues"
 	},
-	"homepage": "https://github.com/steve02081504/format-all#readme",
+	"homepage": "https://github.com/steve02081504/better-format-all#readme",
 	"type": "module",
 	"engines": {
 		"vscode": "^1.100.0",
@@ -33,38 +33,38 @@
 	"l10n": "./l10n",
 	"main": "./extension.mjs",
 	"activationEvents": [
-		"onCommand:formatAll.formatFolder"
+		"onCommand:betterFormatAll.formatFolder"
 	],
 	"contributes": {
 		"commands": [
 			{
-				"command": "formatAll.formatFolder",
-				"title": "%formatAll.formatFolder.title%",
-				"category": "format-all",
+				"command": "betterFormatAll.formatFolder",
+				"title": "%betterFormatAll.formatFolder.title%",
+				"category": "better-format-all",
 				"icon": "$(checklist)"
 			}
 		],
 		"menus": {
 			"explorer/context": [
 				{
-					"command": "formatAll.formatFolder",
+					"command": "betterFormatAll.formatFolder",
 					"when": "explorerResourceIsFolder && resourceScheme == file",
 					"group": "1_modification@1"
 				}
 			]
 		},
 		"configuration": {
-			"title": "format-all",
+			"title": "better-format-all",
 			"properties": {
-				"formatAll.stateFile": {
+				"betterFormatAll.stateFile": {
 					"type": "string",
-					"default": "format-all.json",
-					"markdownDescription": "%formatAll.stateFile.description%"
+					"default": "better-format-all.json",
+					"markdownDescription": "%betterFormatAll.stateFile.description%"
 				},
-				"formatAll.includeUntracked": {
+				"betterFormatAll.includeUntracked": {
 					"type": "boolean",
 					"default": true,
-					"markdownDescription": "%formatAll.includeUntracked.description%"
+					"markdownDescription": "%betterFormatAll.includeUntracked.description%"
 				}
 			}
 		}

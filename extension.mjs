@@ -5,7 +5,7 @@ import { getAbsoluteGitDir, getHeadSha, getRepoRoot } from './lib/git.mjs'
 import { planFiles } from './lib/planner.mjs'
 import { DEFAULT_STATE_FILE, readState, recordFormatted, writeState } from './lib/state.mjs'
 
-const OUTPUT_CHANNEL_NAME = 'format-all'
+const OUTPUT_CHANNEL_NAME = 'better-format-all'
 
 /** @type {vscode.OutputChannel | undefined} */
 let outputChannel
@@ -77,7 +77,7 @@ async function formatTarget(target, progress, token, summary) {
 	}
 
 	const gitDir = await getAbsoluteGitDir(target)
-	const config = vscode.workspace.getConfiguration('formatAll', vscode.Uri.file(target))
+	const config = vscode.workspace.getConfiguration('betterFormatAll', vscode.Uri.file(target))
 	const stateFile = config.get('stateFile', DEFAULT_STATE_FILE)
 	const includeUntracked = config.get('includeUntracked', true)
 	const state = readState(gitDir, stateFile)
@@ -187,7 +187,7 @@ export function activate(context) {
 	outputChannel = vscode.window.createOutputChannel(OUTPUT_CHANNEL_NAME)
 	context.subscriptions.push(outputChannel)
 
-	context.subscriptions.push(vscode.commands.registerCommand('formatAll.formatFolder', async (resource, selected) => {
+	context.subscriptions.push(vscode.commands.registerCommand('betterFormatAll.formatFolder', async (resource, selected) => {
 		const targets = resolveTargets(resource, selected)
 		if (!targets.length) {
 			vscode.window.showWarningMessage(t('Select a folder to format.'))

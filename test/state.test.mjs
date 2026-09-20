@@ -14,7 +14,7 @@ import {
 	writeState
 } from '../lib/state.mjs'
 
-suite('format-all state', () => {
+suite('better-format-all state', () => {
 	test('normalizes relative paths to root-relative POSIX form', () => {
 		assert.strictEqual(normalizeRel('.'), '')
 		assert.strictEqual(normalizeRel(''), '')
@@ -47,7 +47,7 @@ suite('format-all state', () => {
 	})
 
 	test('round-trips through the state file and tolerates corruption', () => {
-		const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'format-all-state-'))
+		const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'better-format-all-state-'))
 		try {
 			const state = recordFormatted(emptyState(), 'src', 'sha-1')
 			writeState(dir, state)

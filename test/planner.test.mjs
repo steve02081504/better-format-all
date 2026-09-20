@@ -29,10 +29,10 @@ function git(cwd, ...args) {
  * @returns {{ dir: string }} 仓库目录
  */
 function makeRepo(files) {
-	const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'format-all-planner-'))
+	const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'better-format-all-planner-'))
 	git(dir, 'init', '-q')
 	git(dir, 'config', 'user.email', 'test@example.com')
-	git(dir, 'config', 'user.name', 'format-all tests')
+	git(dir, 'config', 'user.name', 'better-format-all tests')
 	git(dir, 'config', 'commit.gpgsign', 'false')
 	for (const [name, content] of Object.entries(files)) {
 		const file = path.join(dir, name)
@@ -66,7 +66,7 @@ function relatives(root, files) {
 	return files.map((file) => path.relative(root, file).replace(/\\/g, '/')).sort()
 }
 
-suite('format-all planner', () => {
+suite('better-format-all planner', () => {
 	test('formats every tracked file plus untracked non-ignored files without a baseline', async () => {
 		const { dir } = makeRepo({
 			'a.txt': 'a',
@@ -147,7 +147,7 @@ suite('format-all planner', () => {
 	})
 
 	test('reports no repository outside a git working tree', async () => {
-		const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'format-all-norepo-'))
+		const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'better-format-all-norepo-'))
 		try {
 			assert.strictEqual(await getRepoRoot(dir), undefined)
 			assert.strictEqual(await getHeadSha(dir), undefined)

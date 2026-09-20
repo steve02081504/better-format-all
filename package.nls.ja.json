@@ -1,5 +1,5 @@
 {
-	"formatAll.formatFolder.title": "フォルダー内のすべてのファイルをフォーマット",
-	"formatAll.stateFile.description": "各サブパスの最後に完全にフォーマットされたコミットを記録するため、リポジトリの `.git` ディレクトリ内に書き込まれるファイル名。",
-	"formatAll.includeUntracked.description": "git に追跡されておらず、無視もされていないファイルもフォーマットします。"
+	"betterFormatAll.formatFolder.title": "フォルダー内のすべてのファイルをフォーマット",
+	"betterFormatAll.stateFile.description": "各サブパスの最後に完全にフォーマットされたコミットを記録するため、リポジトリの `.git` ディレクトリ内に書き込まれるファイル名。",
+	"betterFormatAll.includeUntracked.description": "git に追跡されておらず、無視もされていないファイルもフォーマットします。"
 }

@@ -1,6 +1,6 @@
-# AGENTS.md — format-all VS Code extension
+# AGENTS.md — better-format-all VS Code extension
 
-`formatAll.formatFolder`（资源管理器文件夹右键）会把目标文件夹下所有「被 git 跟踪且自上次格式化后发生改动」的文件、以及所有「未跟踪且未被忽略」的文件，逐个用编辑器默认格式化器处理一遍。
+`betterFormatAll.formatFolder`（资源管理器文件夹右键）会把目标文件夹下所有「被 git 跟踪且自上次格式化后发生改动」的文件、以及所有「未跟踪且未被忽略」的文件，逐个用编辑器默认格式化器处理一遍。
 
 ## 命令
 
@@ -24,7 +24,7 @@ eslint --fix --quiet # 共享风格规则；项目 eslint.config.mjs 已忽略 .
 
 ## 基线模型（核心不变式）
 
-- 记录文件默认 `.git/format-all.json`，`subpaths` 是「相对仓库根的路径 → commit SHA」，仓库根用空串 `''`。
+- 记录文件默认 `.git/better-format-all.json`，`subpaths` 是「相对仓库根的路径 → commit SHA」，仓库根用空串 `''`。
 - 某个文件用**自身目录或最深层祖先**的条目作基线（`state.mjs#resolveBaseline`）。这样单独格式化过的子目录下次在父目录任务里不会再被算一遍。
 - 某路径完整格式化后写回该路径（`state.mjs#recordFormatted`）会**清掉它内部所有更细的旧条目**——父条目已经覆盖它们，留着只会多算改动。
 - 基线的写回是**每个目标目录**跑完后的最后一步：只有该目录既未取消、也没有文件失败时才写；失败计数是**每个目标各自**的，别的目录失败不影响本目录写回。`sha` 取不到（仓库尚无提交）时不写。中途取消/关闭窗口不会留下半截基线，旧基线保留，未处理完的文件下次仍会被 `git diff <旧基线>` 或未跟踪状态重新纳入，不会遗漏。
@@ -52,7 +52,7 @@ eslint --fix --quiet # 共享风格规则；项目 eslint.config.mjs 已忽略 .
 
 - `test/**/*.test.mjs` 跑在 VS Code 扩展宿主里（mocha 全局 `suite`/`test`）。`.vscode-test.mjs` 通过 `@steve02081504/exec#where_command('code')` 找本机 VS Code，跨盘时用 junction 搭桥，**绝不下载**。
 - mocha 超时统一设为 60s（`.vscode-test.mjs` 的 `mocha.timeout`）：集成测试要开关编辑器，堆积的机器上会超过默认 2s。
-- `test/extension.test.mjs` 用一个仅本测试可见的 plaintext 格式化器（大写整篇）验证端到端：改动/未跟踪文件被格式化、忽略文件不动、基线写入 `.git/format-all.json`、打开过的标签页全部关闭。
+- `test/extension.test.mjs` 用一个仅本测试可见的 plaintext 格式化器（大写整篇）验证端到端：改动/未跟踪文件被格式化、忽略文件不动、基线写入 `.git/better-format-all.json`、打开过的标签页全部关闭。
 
 ## 上游/环境说明
 

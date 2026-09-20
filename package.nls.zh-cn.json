@@ -1,5 +1,5 @@
 {
-	"formatAll.formatFolder.title": "格式化文件夹内全部文件",
-	"formatAll.stateFile.description": "写入仓库 `.git` 目录的文件名，用于记录每个子路径最后一次完整格式化的 commit。",
-	"formatAll.includeUntracked.description": "同时格式化未被 git 跟踪且未被忽略的文件。"
+	"betterFormatAll.formatFolder.title": "格式化文件夹内全部文件",
+	"betterFormatAll.stateFile.description": "写入仓库 `.git` 目录的文件名，用于记录每个子路径最后一次完整格式化的 commit。",
+	"betterFormatAll.includeUntracked.description": "同时格式化未被 git 跟踪且未被忽略的文件。"
 }

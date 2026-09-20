@@ -1,5 +1,5 @@
 {
-	"formatAll.formatFolder.title": "फ़ोल्डर की सभी फ़ाइलें फ़ॉर्मैट करें",
-	"formatAll.stateFile.description": "रिपॉज़िटरी की `.git` निर्देशिका में लिखा जाने वाला फ़ाइल नाम, जो हर सब-पाथ के लिए अंतिम पूर्ण रूप से फ़ॉर्मैट किए गए commit को रिकॉर्ड करता है।",
-	"formatAll.includeUntracked.description": "उन फ़ाइलों को भी फ़ॉर्मैट करें जो git द्वारा ट्रैक नहीं हैं और अनदेखी भी नहीं हैं।"
+	"betterFormatAll.formatFolder.title": "फ़ोल्डर की सभी फ़ाइलें फ़ॉर्मैट करें",
+	"betterFormatAll.stateFile.description": "रिपॉज़िटरी की `.git` निर्देशिका में लिखा जाने वाला फ़ाइल नाम, जो हर सब-पाथ के लिए अंतिम पूर्ण रूप से फ़ॉर्मैट किए गए commit को रिकॉर्ड करता है।",
+	"betterFormatAll.includeUntracked.description": "उन फ़ाइलों को भी फ़ॉर्मैट करें जो git द्वारा ट्रैक नहीं हैं और अनदेखी भी नहीं हैं।"
 }
