@@ -9,7 +9,7 @@ Formatez tous les fichiers suivis par git ou non validés d'un dossier avec leur
 - **Formater tout un dossier** — cliquez avec le bouton droit sur n'importe quel dossier de l'Explorateur et choisissez **Formater tous les fichiers du dossier**.
 - **Uniquement ce qui a changé** — la première exécution formate tous les fichiers suivis ; les suivantes ne formatent que les fichiers modifiés depuis le dernier commit entièrement formaté, plus tous les fichiers non suivis et non ignorés par git. Les modifications non validées sont toujours prises en compte.
 - **Travail minimal par sous-chemin** — le dernier commit entièrement formaté est mémorisé par sous-chemin dans `.git/format-all.json`, donc un sous-dossier formaté seul n'est pas refait lorsque vous formatez son parent.
-- **Le formateur par défaut** — les fichiers passent par *Format Document*, donc le `editor.defaultFormatter` configuré est utilisé. L'extension ne choisit jamais silencieusement le premier formateur à votre place.
+- **Le formateur par défaut** — les fichiers passent par _Format Document_, donc le `editor.defaultFormatter` configuré est utilisé. L'extension ne choisit jamais silencieusement le premier formateur à votre place.
 - **Annulation sûre** — une notification de progression permet d'annuler. Une exécution annulée ou partiellement en échec ne met **pas** à jour la référence, donc l'exécution suivante voit encore tous les fichiers non formatés.
 - **Interface localisée** — suit la langue d'affichage de VS Code.
 
@@ -30,10 +30,10 @@ Un clic droit sur un dossier qui n'est pas dans un dépôt git signale une erreu
 
 ## Paramètres
 
-| Paramètre                     | Défaut             | Description                                                                                     |
-| ----------------------------- | ------------------ | ----------------------------------------------------------------------------------------------- |
-| `formatAll.stateFile`         | `format-all.json`  | Nom du fichier écrit dans le répertoire `.git` du dépôt.                                        |
-| `formatAll.includeUntracked`  | `true`             | Formate aussi les fichiers non suivis et non ignorés par git.                                   |
+| Paramètre                    | Défaut            | Description                                                   |
+| ---------------------------- | ----------------- | ------------------------------------------------------------- |
+| `formatAll.stateFile`        | `format-all.json` | Nom du fichier écrit dans le répertoire `.git` du dépôt.      |
+| `formatAll.includeUntracked` | `true`            | Formate aussi les fichiers non suivis et non ignorés par git. |
 
 ## Prérequis
 
@@ -43,15 +43,15 @@ Un clic droit sur un dossier qui n'est pas dans un dépôt git signale une erreu
 
 ## Localisation
 
-| Langue                   | Locale        |
-| ------------------------ | ------------- |
-| Anglais (États-Unis)     | `en`, `en-US` |
-| Anglais (Royaume-Uni)    | `en-gb`       |
-| 简体中文                 | `zh-cn`       |
-| 日本語                   | `ja`          |
-| Français                 | `fr`          |
-| Español                  | `es`          |
-| हिंदी                    | `hi`          |
+| Langue                | Locale        |
+| --------------------- | ------------- |
+| Anglais (États-Unis)  | `en`, `en-US` |
+| Anglais (Royaume-Uni) | `en-gb`       |
+| 简体中文              | `zh-cn`       |
+| 日本語                | `ja`          |
+| Français              | `fr`          |
+| Español               | `es`          |
+| हिंदी                 | `hi`          |
 
 Les titres de commandes et les notifications suivent la langue d'affichage de VS Code.
 

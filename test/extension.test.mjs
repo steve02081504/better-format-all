@@ -18,7 +18,7 @@ const FORMAT_ALL_COMMAND = 'formatAll.formatFolder'
  * @param {...string} args - git 参数
  * @returns {string} 标准输出
  */
-function git (cwd, ...args) {
+function git(cwd, ...args) {
 	return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
 }
 
@@ -28,7 +28,7 @@ function git (cwd, ...args) {
  * @param {vscode.TextDocument} document - 目标文档
  * @returns {vscode.Range} 覆盖全文的范围
  */
-function fullRange (document) {
+function fullRange(document) {
 	const lastLine = Math.max(document.lineCount - 1, 0)
 	return new vscode.Range(new vscode.Position(0, 0), document.lineAt(lastLine).range.end)
 }
@@ -50,7 +50,7 @@ suite('format-all extension', () => {
 			 * @param {vscode.TextDocument} document - 目标文档
 			 * @returns {vscode.TextEdit[]} 格式化编辑
 			 */
-			provideDocumentFormattingEdits (document) {
+			provideDocumentFormattingEdits(document) {
 				const text = document.getText()
 				const upper = text.toUpperCase()
 				return upper === text ? [] : [vscode.TextEdit.replace(fullRange(document), upper)]

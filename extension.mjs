@@ -17,7 +17,7 @@ let outputChannel
  * @param {...any} args - 格式化参数列表
  * @returns {string} 本地化后的字符串
  */
-function t (message, ...args) {
+function t(message, ...args) {
 	return vscode.l10n.t(message, ...args)
 }
 
@@ -26,7 +26,7 @@ function t (message, ...args) {
  *
  * @returns {vscode.OutputChannel} 共享输出通道实例
  */
-function getOutputChannel () {
+function getOutputChannel() {
 	if (!outputChannel) outputChannel = vscode.window.createOutputChannel(OUTPUT_CHANNEL_NAME)
 	return outputChannel
 }
@@ -39,7 +39,7 @@ function getOutputChannel () {
  * @param {unknown} selected - 多选时的资源数组
  * @returns {string[]} 目标文件夹的绝对路径
  */
-function resolveTargets (resource, selected) {
+function resolveTargets(resource, selected) {
 	const folders = []
 	if (Array.isArray(selected)) {
 		for (const uri of selected) if (uri instanceof vscode.Uri) folders.push(uri.fsPath)
@@ -55,7 +55,7 @@ function resolveTargets (resource, selected) {
  *
  * @returns {{ targets: number, files: number, formatted: number, unchanged: number, skipped: number, failed: number, cancelled: boolean }} 统计对象
  */
-function newSummary () {
+function newSummary() {
 	return { targets: 0, files: 0, formatted: 0, unchanged: 0, skipped: 0, failed: 0, cancelled: false }
 }
 
@@ -68,7 +68,7 @@ function newSummary () {
  * @param {object} summary - 累计统计
  * @returns {Promise<void>}
  */
-async function formatTarget (target, progress, token, summary) {
+async function formatTarget(target, progress, token, summary) {
 	const repoRoot = await getRepoRoot(target)
 	if (!repoRoot) {
 		vscode.window.showErrorMessage(t('{0} is not inside a git repository.', target))
@@ -140,7 +140,7 @@ async function formatTarget (target, progress, token, summary) {
  * @param {vscode.CancellationToken} token - 取消令牌
  * @returns {Promise<object>} 累计统计
  */
-async function formatTargets (targets, progress, token) {
+async function formatTargets(targets, progress, token) {
 	const summary = newSummary()
 	for (const target of targets) {
 		if (token.isCancellationRequested) {
@@ -158,7 +158,7 @@ async function formatTargets (targets, progress, token) {
  * @param {object} summary - 累计统计
  * @returns {void}
  */
-function report (summary) {
+function report(summary) {
 	const parts = [t('{0} formatted', summary.formatted), t('{0} unchanged', summary.unchanged)]
 	if (summary.skipped) parts.push(t('{0} skipped', summary.skipped))
 	if (summary.failed) parts.push(t('{0} failed', summary.failed))
@@ -182,7 +182,7 @@ function report (summary) {
  *
  * @param {vscode.ExtensionContext} context - 扩展上下文，用于注册订阅
  */
-export function activate (context) {
+export function activate(context) {
 	outputChannel = vscode.window.createOutputChannel(OUTPUT_CHANNEL_NAME)
 	context.subscriptions.push(outputChannel)
 
@@ -206,6 +206,6 @@ export function activate (context) {
 /**
  * 停用扩展，订阅会由 VS Code 自动释放。
  */
-export function deactivate () {
+export function deactivate() {
 	// 一切都通过 `context.subscriptions` 释放。
 }

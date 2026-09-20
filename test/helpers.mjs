@@ -8,7 +8,7 @@ import path from 'node:path'
  * @param {string} target - 要处理的文件或目录
  * @returns {void}
  */
-function makeWritable (target) {
+function makeWritable(target) {
 	let stat
 	try {
 		stat = fs.lstatSync(target)
@@ -39,7 +39,7 @@ function makeWritable (target) {
  * @param {number} ms - 毫秒数
  * @returns {void}
  */
-function sleep (ms) {
+function sleep(ms) {
 	Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms)
 }
 
@@ -50,7 +50,7 @@ function sleep (ms) {
  * @param {string} dir - 目录
  * @returns {void}
  */
-export function removeDir (dir) {
+export function removeDir(dir) {
 	if (!fs.existsSync(dir)) return
 	for (let attempt = 0; attempt < 5; attempt++) {
 		makeWritable(dir)

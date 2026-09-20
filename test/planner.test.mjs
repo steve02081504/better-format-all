@@ -17,7 +17,7 @@ import { removeDir } from './helpers.mjs'
  * @param {...string} args - git 参数
  * @returns {string} 标准输出
  */
-function git (cwd, ...args) {
+function git(cwd, ...args) {
 	return execFileSync('git', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
 }
 
@@ -27,7 +27,7 @@ function git (cwd, ...args) {
  * @param {Record<string, string>} files - 相对路径到内容的映射
  * @returns {{ dir: string }} 仓库目录
  */
-function makeRepo (files) {
+function makeRepo(files) {
 	const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'format-all-planner-'))
 	git(dir, 'init', '-q')
 	git(dir, 'config', 'user.email', 'test@example.com')
@@ -48,7 +48,7 @@ function makeRepo (files) {
  * @param {string} message - 提交信息
  * @returns {string} 新提交的 SHA
  */
-function commit (dir, message) {
+function commit(dir, message) {
 	git(dir, 'add', '-A')
 	git(dir, 'commit', '-q', '-m', message)
 	return git(dir, 'rev-parse', 'HEAD').trim()
@@ -61,7 +61,7 @@ function commit (dir, message) {
  * @param {string[]} files - 绝对路径
  * @returns {string[]} 相对路径
  */
-function relatives (root, files) {
+function relatives(root, files) {
 	return files.map((file) => path.relative(root, file).replace(/\\/g, '/')).sort()
 }
 

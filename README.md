@@ -9,7 +9,7 @@ Format every git-tracked or uncommitted file under a folder with its default for
 - **Format a whole folder** — right-click any folder in the Explorer and choose **Format All Files in Folder**.
 - **Only what changed** — the first run formats every tracked file; later runs format only the files that changed since the last fully formatted commit, plus every untracked file that git does not ignore. Uncommitted changes are always picked up.
 - **Minimal work per sub-path** — the last fully formatted commit is remembered per sub-path in `.git/format-all.json`, so a sub-folder formatted on its own is not redone when you later format its parent.
-- **The default formatter** — files are formatted through *Format Document*, so the configured `editor.defaultFormatter` is used. The extension never silently picks the first available formatter for you.
+- **The default formatter** — files are formatted through _Format Document_, so the configured `editor.defaultFormatter` is used. The extension never silently picks the first available formatter for you.
 - **Safe to cancel** — a progress notification lets you cancel. A cancelled or partially failed run does **not** update the baseline, so the next run still sees every unformatted file.
 - **Localized UI** — follows the VS Code display language.
 
@@ -30,10 +30,10 @@ Right-clicking a folder that is not inside a git repository reports an error and
 
 ## Settings
 
-| Setting                       | Default            | Description                                                                                          |
-| ----------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------- |
-| `formatAll.stateFile`         | `format-all.json`  | File name written inside the repository's `.git` directory.                                          |
-| `formatAll.includeUntracked`  | `true`             | Also format files that are untracked and not ignored by git.                                         |
+| Setting                      | Default           | Description                                                  |
+| ---------------------------- | ----------------- | ------------------------------------------------------------ |
+| `formatAll.stateFile`        | `format-all.json` | File name written inside the repository's `.git` directory.  |
+| `formatAll.includeUntracked` | `true`            | Also format files that are untracked and not ignored by git. |
 
 ## Requirements
 
