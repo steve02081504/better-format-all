@@ -8,6 +8,7 @@ import path from 'node:path'
 import { getHeadSha, getRepoRoot } from '../lib/git.mjs'
 import { planFiles } from '../lib/planner.mjs'
 import { emptyState, recordFormatted, resolveBaseline } from '../lib/state.mjs'
+
 import { removeDir } from './helpers.mjs'
 
 /**

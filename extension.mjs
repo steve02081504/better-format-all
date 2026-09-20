@@ -41,9 +41,10 @@ function getOutputChannel() {
  */
 function resolveTargets(resource, selected) {
 	const folders = []
-	if (Array.isArray(selected)) {
-		for (const uri of selected) if (uri instanceof vscode.Uri) folders.push(uri.fsPath)
-	}
+	if (Array.isArray(selected))
+		for (const uri of selected)
+			if (uri instanceof vscode.Uri) folders.push(uri.fsPath)
+
 	if (!folders.length && resource instanceof vscode.Uri) folders.push(resource.fsPath)
 	if (!folders.length && vscode.workspace.workspaceFolders?.length)
 		folders.push(vscode.workspace.workspaceFolders[0].uri.fsPath)

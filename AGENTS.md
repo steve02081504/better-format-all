@@ -9,7 +9,10 @@ npm install   # once
 npm test      # @vscode/test-cli，复用 PATH 上本机安装的 VS Code（不下载）
 npm run build # 打包 VSIX 并用本机 `code` 安装
 npm run package # 只打包，不安装
+eslint --fix --quiet # 共享风格规则；项目 eslint.config.mjs 已忽略 .vscode-test 等生成目录
 ```
+
+- `eslint.config.mjs` 复用公共配置（`my-eslint-config/deno.mjs`）并追加 `ignores`。否则 ESLint 会向上找到家目录的配置，把 `.vscode-test/user-data/**` 里 VS Code 自带的 `askpass-main.js` 也当成源码报一堆 JSDoc 错误。该风格要求单语句不加花括号，`eslint --fix` 会自动改。
 
 ## 结构
 
