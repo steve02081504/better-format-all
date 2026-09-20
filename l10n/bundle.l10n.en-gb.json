@@ -4,6 +4,8 @@
 	"Nothing to format.": "Nothing to format.",
 	"{0} ({1}/{2})": "{0} ({1}/{2})",
 	"Failed to format {0}: {1}": "Failed to format {0}: {1}",
+	"An error occurred while formatting: {0}": "An error occurred while formatting: {0}",
+	"An error occurred: {0}": "An error occurred: {0}",
 	"Recorded {0} as the format baseline for {1}.": "Recorded {0} as the format baseline for {1}.",
 	"{0} formatted": "{0} formatted",
 	"{0} unchanged": "{0} unchanged",

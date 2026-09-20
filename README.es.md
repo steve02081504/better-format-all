@@ -8,9 +8,10 @@ Formatea todos los archivos rastreados por git o sin confirmar de una carpeta co
 
 - **Formatear toda una carpeta** — haz clic derecho en cualquier carpeta del Explorador y elige **Formatear todos los archivos de la carpeta**.
 - **Solo lo que cambió** — la primera ejecución formatea todos los archivos rastreados; las siguientes solo formatean los archivos modificados desde el último commit totalmente formateado, más todos los archivos sin rastrear y no ignorados por git. Los cambios sin confirmar siempre se incluyen.
+- **Los archivos binarios se omiten** — un archivo se deja intacto cuando aparece un byte NUL en sus primeros 8 KiB.
 - **Trabajo mínimo por subruta** — el último commit totalmente formateado se recuerda por subruta en `.git/better-format-all.json`, así que una subcarpeta formateada por separado no se repite cuando luego formateas su carpeta padre.
 - **El formateador predeterminado** — los archivos pasan por _Format Document_, por lo que se usa el `editor.defaultFormatter` configurado. La extensión nunca elige silenciosamente el primer formateador por ti.
-- **Cancelación segura** — una notificación de progreso permite cancelar. Una ejecución cancelada o parcialmente fallida **no** actualiza la línea base, por lo que la siguiente ejecución todavía ve todos los archivos sin formatear.
+- **Cancelación segura** — la notificación de progreso muestra una barra de progreso y permite cancelar. Una ejecución cancelada o parcialmente fallida **no** actualiza la línea base, por lo que la siguiente ejecución todavía ve todos los archivos sin formatear. Los fallos se escriben en el canal de salida _better-format-all_, que se muestra automáticamente.
 - **Interfaz localizada** — sigue el idioma de visualización de VS Code.
 
 ## Uso

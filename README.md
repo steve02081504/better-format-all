@@ -8,9 +8,10 @@ Format every git-tracked or uncommitted file under a folder with its default for
 
 - **Format a whole folder** — right-click any folder in the Explorer and choose **Better Format All Files in Folder**.
 - **Only what changed** — the first run formats every tracked file; later runs format only the files that changed since the last fully formatted commit, plus every untracked file that git does not ignore. Uncommitted changes are always picked up.
+- **Binary files are skipped** — a file is left untouched when a NUL byte appears in its first 8 KiB.
 - **Minimal work per sub-path** — the last fully formatted commit is remembered per sub-path in `.git/better-format-all.json`, so a sub-folder formatted on its own is not redone when you later format its parent.
 - **The default formatter** — files are formatted through _Format Document_, so the configured `editor.defaultFormatter` is used. The extension never silently picks the first available formatter for you.
-- **Safe to cancel** — a progress notification lets you cancel. A cancelled or partially failed run does **not** update the baseline, so the next run still sees every unformatted file.
+- **Safe to cancel** — the progress notification shows a progress bar and lets you cancel. A cancelled or partially failed run does **not** update the baseline, so the next run still sees every unformatted file. Failures are written to the _better-format-all_ output channel, which is revealed automatically.
 - **Localized UI** — follows the VS Code display language.
 
 ## Usage

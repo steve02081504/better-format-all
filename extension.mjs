@@ -61,19 +61,18 @@ function newSummary() {
 }
 
 /**
- * 处理一个目标目录：解析仓库、计算待格式化文件、逐个格式化，成功后写回基线。
+ * 解析目标目录的仓库信息、配置、基线与待格式化文件，供后续格式化使用。
  *
  * @param {string} target - 目标目录
- * @param {object} progress - VS Code 进度报告器
- * @param {vscode.CancellationToken} token - 取消令牌
- * @param {object} summary - 累计统计
- * @returns {Promise<void>}
+ * @returns {Promise<object | undefined>} 计划对象；目标不在 git 仓库内时为 undefined
  */
-async function formatTarget(target, progress, token, summary) {
+async function planTarget(target) {
 	const repoRoot = await getRepoRoot(target)
 	if (!repoRoot) {
-		vscode.window.showErrorMessage(t('{0} is not inside a git repository.', target))
-		return
+		const message = t('{0} is not inside a git repository.', target)
+		getOutputChannel().appendLine(message)
+		vscode.window.showErrorMessage(message)
+		return undefined
 	}
 
 	const gitDir = await getAbsoluteGitDir(target)
@@ -83,6 +82,21 @@ async function formatTarget(target, progress, token, summary) {
 	const state = readState(gitDir, stateFile)
 
 	const { relTarget, files } = await planFiles({ repoRoot, state, target, includeUntracked })
+	return { target, repoRoot, gitDir, stateFile, relTarget, files, state }
+}
+
+/**
+ * 处理一个已规划好的目标目录：逐个格式化文件，成功后写回基线。
+ *
+ * @param {object} plan - `planTarget` 的结果
+ * @param {object} progress - VS Code 进度报告器
+ * @param {vscode.CancellationToken} token - 取消令牌
+ * @param {object} summary - 累计统计
+ * @param {{ done: number, total: number }} counter - 跨目标的进度计数
+ * @returns {Promise<void>}
+ */
+async function formatTarget(plan, progress, token, summary, counter) {
+	const { target, repoRoot, gitDir, stateFile, relTarget, files, state } = plan
 	if (!files.length) {
 		getOutputChannel().appendLine(t('Nothing to format under {0}.', target))
 		return
@@ -90,7 +104,6 @@ async function formatTarget(target, progress, token, summary) {
 
 	summary.targets += 1
 	const label = relTarget || '.'
-	let completed = 0
 	// 只统计本次目标自己的失败：别的目录失败不应阻止这个目录写回基线。
 	let failed = 0
 	for (const file of files) {
@@ -99,10 +112,13 @@ async function formatTarget(target, progress, token, summary) {
 			return
 		}
 
-		progress.report({ message: t('{0} ({1}/{2})', label, completed + 1, files.length) })
+		counter.done += 1
+		progress.report({
+			message: t('{0} ({1}/{2})', label, counter.done, counter.total),
+			increment: counter.total ? 100 / counter.total : undefined
+		})
 		const result = await formatFile(vscode.Uri.file(file))
 		summary.files += 1
-		completed += 1
 
 		switch (result.status) {
 			case 'formatted':
@@ -134,7 +150,7 @@ async function formatTarget(target, progress, token, summary) {
 }
 
 /**
- * 遍历所有目标目录。
+ * 先规划所有目标得到文件总数，再逐个格式化，让通知里的进度条反映整体进度。
  *
  * @param {string[]} targets - 目标目录列表
  * @param {object} progress - VS Code 进度报告器
@@ -143,14 +159,44 @@ async function formatTarget(target, progress, token, summary) {
  */
 async function formatTargets(targets, progress, token) {
 	const summary = newSummary()
+	/** @type {object[]} */
+	const plans = []
 	for (const target of targets) {
 		if (token.isCancellationRequested) {
 			summary.cancelled = true
 			break
 		}
-		await formatTarget(target, progress, token, summary)
+		const plan = await planTarget(target)
+		if (plan) plans.push(plan)
+	}
+	if (summary.cancelled) return summary
+
+	const total = plans.reduce((sum, plan) => sum + plan.files.length, 0)
+	const counter = { done: 0, total }
+	for (const plan of plans) {
+		await formatTarget(plan, progress, token, summary, counter)
+		if (summary.cancelled) break
 	}
 	return summary
+}
+
+/**
+ * 把未预期的错误写进日志并展示给用户。
+ *
+ * @param {unknown} error - 捕获到的错误
+ * @returns {void}
+ */
+function handleError(error) {
+	const channel = getOutputChannel()
+	channel.appendLine(t('An error occurred: {0}', error instanceof Error ? error.stack || error.message : String(error)))
+	channel.show(true)
+	const showOutput = t('Show Output')
+	vscode.window.showErrorMessage(
+		t('An error occurred while formatting: {0}', error instanceof Error ? error.message : String(error)),
+		showOutput
+	).then((choice) => {
+		if (choice === showOutput) channel.show(true)
+	})
 }
 
 /**
@@ -166,10 +212,12 @@ function report(summary) {
 	const details = parts.join(', ')
 
 	if (summary.failed) {
+		const channel = getOutputChannel()
+		channel.show(true)
 		const showOutput = t('Show Output')
 		vscode.window.showWarningMessage(t('Formatted {0} file(s): {1}', summary.files, details), showOutput)
 			.then((choice) => {
-				if (choice === showOutput) getOutputChannel().show(true)
+				if (choice === showOutput) channel.show(true)
 			})
 		return
 	}
@@ -194,13 +242,18 @@ export function activate(context) {
 			return
 		}
 
-		const summary = await vscode.window.withProgress({
-			location: vscode.ProgressLocation.Notification,
-			title: t('Formatting git-tracked files...'),
-			cancellable: true
-		}, (progress, token) => formatTargets(targets, progress, token))
+		try {
+			const summary = await vscode.window.withProgress({
+				location: vscode.ProgressLocation.Notification,
+				title: t('Formatting git-tracked files...'),
+				cancellable: true
+			}, (progress, token) => formatTargets(targets, progress, token))
 
-		report(summary)
+			report(summary)
+		}
+		catch (error) {
+			handleError(error)
+		}
 	}))
 }
 

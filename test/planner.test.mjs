@@ -146,6 +146,39 @@ suite('better-format-all planner', () => {
 		}
 	})
 
+	test('ignores binary files with a NUL byte in the first 8 KiB', async () => {
+		const { dir } = makeRepo({ 'a.txt': 'a' })
+		try {
+			fs.writeFileSync(path.join(dir, 'blob.bin'), new Uint8Array([0x74, 0x65, 0x78, 0x74, 0x00, 0x62]))
+			commit(dir, 'init')
+			// 未跟踪的二进制文件同样应被忽略。
+			fs.writeFileSync(path.join(dir, 'untracked.bin'), new Uint8Array([0x00, 0x01, 0x02]))
+			const repoRoot = await getRepoRoot(dir)
+			const { files } = await planFiles({ repoRoot, state: emptyState(), target: repoRoot })
+			assert.deepStrictEqual(relatives(repoRoot, files), ['a.txt'])
+		}
+		finally {
+			removeDir(dir)
+		}
+	})
+
+	test('keeps files whose first NUL appears past the 8 KiB sniff window', async () => {
+		const { dir } = makeRepo({ 'a.txt': 'a' })
+		try {
+			const late = new Uint8Array(8 * 1024 + 1)
+			late.fill(0x61)
+			late[8 * 1024] = 0x00
+			fs.writeFileSync(path.join(dir, 'late.bin'), late)
+			commit(dir, 'init')
+			const repoRoot = await getRepoRoot(dir)
+			const { files } = await planFiles({ repoRoot, state: emptyState(), target: repoRoot })
+			assert.deepStrictEqual(relatives(repoRoot, files), ['a.txt', 'late.bin'])
+		}
+		finally {
+			removeDir(dir)
+		}
+	})
+
 	test('reports no repository outside a git working tree', async () => {
 		const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'better-format-all-norepo-'))
 		try {

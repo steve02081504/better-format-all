@@ -8,9 +8,10 @@ Formatez tous les fichiers suivis par git ou non validés d'un dossier avec leur
 
 - **Formater tout un dossier** — cliquez avec le bouton droit sur n'importe quel dossier de l'Explorateur et choisissez **Formater tous les fichiers du dossier**.
 - **Uniquement ce qui a changé** — la première exécution formate tous les fichiers suivis ; les suivantes ne formatent que les fichiers modifiés depuis le dernier commit entièrement formaté, plus tous les fichiers non suivis et non ignorés par git. Les modifications non validées sont toujours prises en compte.
+- **Les fichiers binaires sont ignorés** — un fichier est laissé tel quel lorsqu'un octet NUL apparaît dans ses 8 premiers Kio.
 - **Travail minimal par sous-chemin** — le dernier commit entièrement formaté est mémorisé par sous-chemin dans `.git/better-format-all.json`, donc un sous-dossier formaté seul n'est pas refait lorsque vous formatez son parent.
 - **Le formateur par défaut** — les fichiers passent par _Format Document_, donc le `editor.defaultFormatter` configuré est utilisé. L'extension ne choisit jamais silencieusement le premier formateur à votre place.
-- **Annulation sûre** — une notification de progression permet d'annuler. Une exécution annulée ou partiellement en échec ne met **pas** à jour la référence, donc l'exécution suivante voit encore tous les fichiers non formatés.
+- **Annulation sûre** — la notification de progression affiche une barre de progression et permet d'annuler. Une exécution annulée ou partiellement en échec ne met **pas** à jour la référence, donc l'exécution suivante voit encore tous les fichiers non formatés. Les échecs sont écrits dans le canal de sortie _better-format-all_, affiché automatiquement.
 - **Interface localisée** — suit la langue d'affichage de VS Code.
 
 ## Utilisation

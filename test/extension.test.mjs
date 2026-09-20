@@ -66,6 +66,8 @@ suite('better-format-all extension', () => {
 			fs.writeFileSync(path.join(dir, 'a.txt'), 'hello')
 			fs.mkdirSync(path.join(dir, 'sub'))
 			fs.writeFileSync(path.join(dir, 'sub', 'b.txt'), 'world')
+			const binary = new Uint8Array([0x63, 0x6f, 0x6e, 0x74, 0x00, 0x6e, 0x75, 0x6c])
+			fs.writeFileSync(path.join(dir, 'data.bin'), binary)
 			git(dir, 'add', '-A')
 			git(dir, 'commit', '-q', '-m', 'init')
 			const head = git(dir, 'rev-parse', 'HEAD').trim()
@@ -80,6 +82,8 @@ suite('better-format-all extension', () => {
 			assert.strictEqual(fs.readFileSync(path.join(dir, 'sub', 'b.txt'), 'utf8'), 'WORLD')
 			assert.strictEqual(fs.readFileSync(path.join(dir, 'untracked.txt'), 'utf8'), 'CAP ME')
 			assert.strictEqual(fs.readFileSync(path.join(dir, 'ignored', 'i.txt'), 'utf8'), 'keep me')
+			// 二进制文件应被忽略，哪怕它的语言默认格式化器会改写内容。
+			assert.deepStrictEqual(Array.from(fs.readFileSync(path.join(dir, 'data.bin'))), Array.from(binary))
 
 			const stateFile = path.join(dir, '.git', 'better-format-all.json')
 			assert.strictEqual(fs.existsSync(stateFile), true)

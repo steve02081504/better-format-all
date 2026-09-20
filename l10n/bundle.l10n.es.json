@@ -4,6 +4,8 @@
 	"Nothing to format.": "No hay nada que formatear.",
 	"{0} ({1}/{2})": "{0} ({1}/{2})",
 	"Failed to format {0}: {1}": "No se pudo formatear {0}: {1}",
+	"An error occurred while formatting: {0}": "Se produjo un error al formatear: {0}",
+	"An error occurred: {0}": "Se produjo un error: {0}",
 	"Recorded {0} as the format baseline for {1}.": "{0} registrado como línea base de formato para {1}.",
 	"{0} formatted": "{0} formateado(s)",
 	"{0} unchanged": "{0} sin cambios",

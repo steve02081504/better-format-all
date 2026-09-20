@@ -2,7 +2,7 @@
 	"name": "better-format-all",
 	"displayName": "Better Format All",
 	"description": "Format every git-tracked or uncommitted file under a folder with its default formatter, remembering the last fully formatted commit per sub-path.",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"publisher": "steve02081504",
 	"license": "LGPL-3.0-only",
 	"repository": {

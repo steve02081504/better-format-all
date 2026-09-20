@@ -13,13 +13,14 @@ eslint --fix --quiet # 共享风格规则；项目 eslint.config.mjs 已忽略 .
 ```
 
 - `eslint.config.mjs` 复用公共配置（`my-eslint-config/deno.mjs`）并追加 `ignores`。否则 ESLint 会向上找到家目录的配置，把 `.vscode-test/user-data/**` 里 VS Code 自带的 `askpass-main.js` 也当成源码报一堆 JSDoc 错误。该风格要求单语句不加花括号，`eslint --fix` 会自动改。
+- 必须直接运行 `eslint`（Deno 安装的二进制），**不要用 `npx eslint`**：公共配置 `import` 的是 https URL，Node 的默认加载器不支持，只有 Deno 能解析。同理该配置面向 Deno，代码里不要用 `Buffer` 等 Node-only 全局（会触发 `no-undef`），二进制处理用 `Uint8Array`。
 
 ## 结构
 
-- `extension.mjs`：注册命令、遍历目标目录、报告进度/结果、写回基线。多选时 VS Code 传入 `(resource, selected)`，两者都处理。
+- `extension.mjs`：注册命令、遍历目标目录、报告进度/结果、写回基线。多选时 VS Code 传入 `(resource, selected)`，两者都处理。先 `planTarget` 规划出所有目标的文件总数，再用 `progress.report({ increment })` 显示确定进度条；未预期异常由 `handleError` 写入输出通道并 `showErrorMessage`，每个文件失败也会自动展示输出通道。
 - `lib/git.mjs`：`git` 包装。所有列举都返回相对仓库根、以 `/` 分隔的路径。
 - `lib/state.mjs`：`.git` 下 JSON 的读写、基线解析、记录更新。
-- `lib/planner.mjs`：按基线分组算出待格式化文件。
+- `lib/planner.mjs`：按基线分组算出待格式化文件；前 8 KiB 内含 NUL 字节的文件视为二进制并忽略。
 - `lib/formatRunner.mjs`：打开 → `editor.action.formatDocument` → 保存 → 关闭。
 
 ## 基线模型（核心不变式）
@@ -29,7 +30,7 @@ eslint --fix --quiet # 共享风格规则；项目 eslint.config.mjs 已忽略 .
 - 某路径完整格式化后写回该路径（`state.mjs#recordFormatted`）会**清掉它内部所有更细的旧条目**——父条目已经覆盖它们，留着只会多算改动。
 - 基线的写回是**每个目标目录**跑完后的最后一步：只有该目录既未取消、也没有文件失败时才写；失败计数是**每个目标各自**的，别的目录失败不影响本目录写回。`sha` 取不到（仓库尚无提交）时不写。中途取消/关闭窗口不会留下半截基线，旧基线保留，未处理完的文件下次仍会被 `git diff <旧基线>` 或未跟踪状态重新纳入，不会遗漏。
 - 目标不在 git 仓库内时用 `showErrorMessage` 报错并跳过，不做任何事。
-- 选择规则：无基线 ⇒ 该组全部被跟踪文件；有基线 ⇒ `git diff <sha>` 与**工作区**（含未提交改动）比出的改动文件。未跟踪非忽略文件永远纳入（`--exclude-standard`）。用工作区而非 HEAD 作右端是刻意的：未提交的修改每次都重新处理。
+- 选择规则：无基线 ⇒ 该组全部被跟踪文件；有基线 ⇒ `git diff <sha>` 与**工作区**（含未提交改动）比出的改动文件。未跟踪非忽略文件永远纳入（`--exclude-standard`）。用工作区而非 HEAD 作右端是刻意的：未提交的修改每次都重新处理。开头 8 KiB 含 NUL 的二进制文件在规划阶段就被排除，不计数也不处理。
 
 ## 默认格式化器
 

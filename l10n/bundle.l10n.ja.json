@@ -4,6 +4,8 @@
 	"Nothing to format.": "フォーマットするファイルはありません。",
 	"{0} ({1}/{2})": "{0}（{1}/{2}）",
 	"Failed to format {0}: {1}": "{0} のフォーマットに失敗しました：{1}",
+	"An error occurred while formatting: {0}": "フォーマット中にエラーが発生しました：{0}",
+	"An error occurred: {0}": "エラーが発生しました：{0}",
 	"Recorded {0} as the format baseline for {1}.": "{1} のフォーマット基準として {0} を記録しました。",
 	"{0} formatted": "{0} 件をフォーマット",
 	"{0} unchanged": "{0} 件は変更なし",
