@@ -1,0 +1,83 @@
+{
+	"name": "format-all",
+	"displayName": "Format All",
+	"description": "Format every git-tracked or uncommitted file under a folder with its default formatter, remembering the last fully formatted commit per sub-path.",
+	"version": "0.0.1",
+	"publisher": "steve02081504",
+	"license": "LGPL-3.0-only",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/steve02081504/format-all.git"
+	},
+	"bugs": {
+		"url": "https://github.com/steve02081504/format-all/issues"
+	},
+	"homepage": "https://github.com/steve02081504/format-all#readme",
+	"type": "module",
+	"engines": {
+		"vscode": "^1.100.0",
+		"node": ">=24.2.0"
+	},
+	"categories": [
+		"Formatters",
+		"Other"
+	],
+	"keywords": [
+		"format",
+		"formatter",
+		"git",
+		"batch",
+		"format all",
+		"changed files"
+	],
+	"l10n": "./l10n",
+	"main": "./extension.mjs",
+	"activationEvents": [
+		"onCommand:formatAll.formatFolder"
+	],
+	"contributes": {
+		"commands": [
+			{
+				"command": "formatAll.formatFolder",
+				"title": "%formatAll.formatFolder.title%",
+				"category": "format-all",
+				"icon": "$(checklist)"
+			}
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"command": "formatAll.formatFolder",
+					"when": "explorerResourceIsFolder && resourceScheme == file",
+					"group": "1_modification@1"
+				}
+			]
+		},
+		"configuration": {
+			"title": "format-all",
+			"properties": {
+				"formatAll.stateFile": {
+					"type": "string",
+					"default": "format-all.json",
+					"markdownDescription": "%formatAll.stateFile.description%"
+				},
+				"formatAll.includeUntracked": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "%formatAll.includeUntracked.description%"
+				}
+			}
+		}
+	},
+	"scripts": {
+		"test": "vscode-test",
+		"build": "node scripts/build.mjs",
+		"package": "node scripts/build.mjs --no-install"
+	},
+	"devDependencies": {
+		"@steve02081504/exec": "^0.0.8",
+		"@vscode/test-cli": "^0.0.10",
+		"@vscode/test-electron": "^2.4.1",
+		"@vscode/vsce": "^4.0.0"
+	}
+}

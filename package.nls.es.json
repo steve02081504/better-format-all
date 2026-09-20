@@ -1,0 +1,5 @@
+{
+	"formatAll.formatFolder.title": "Formatear todos los archivos de una carpeta",
+	"formatAll.stateFile.description": "Nombre de archivo que se escribe dentro del directorio `.git` del repositorio y registra el último commit totalmente formateado de cada subruta.",
+	"formatAll.includeUntracked.description": "También formatea los archivos no rastreados y no ignorados por git."
+}

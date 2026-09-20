@@ -1,0 +1,17 @@
+{
+	"{0} is not inside a git repository.": "{0} は git リポジトリ内にありません。",
+	"Nothing to format under {0}.": "{0} にフォーマットするファイルはありません。",
+	"Nothing to format.": "フォーマットするファイルはありません。",
+	"{0} ({1}/{2})": "{0}（{1}/{2}）",
+	"Failed to format {0}: {1}": "{0} のフォーマットに失敗しました：{1}",
+	"Recorded {0} as the format baseline for {1}.": "{1} のフォーマット基準として {0} を記録しました。",
+	"{0} formatted": "{0} 件をフォーマット",
+	"{0} unchanged": "{0} 件は変更なし",
+	"{0} skipped": "{0} 件をスキップ",
+	"{0} failed": "{0} 件が失敗",
+	"Show Output": "出力を表示",
+	"Formatted {0} file(s): {1}": "{0} 個のファイルを処理しました：{1}",
+	"Formatting cancelled: {0}": "フォーマットをキャンセルしました：{0}",
+	"Select a folder to format.": "フォーマットするフォルダーを選択してください。",
+	"Formatting git-tracked files...": "git 管理下のファイルをフォーマットしています..."
+}

@@ -1,0 +1,17 @@
+{
+	"{0} is not inside a git repository.": "{0} ne se trouve pas dans un dépôt git.",
+	"Nothing to format under {0}.": "Aucun fichier à formater sous {0}.",
+	"Nothing to format.": "Aucun fichier à formater.",
+	"{0} ({1}/{2})": "{0} ({1}/{2})",
+	"Failed to format {0}: {1}": "Échec du formatage de {0} : {1}",
+	"Recorded {0} as the format baseline for {1}.": "{0} enregistré comme référence de formatage pour {1}.",
+	"{0} formatted": "{0} formaté(s)",
+	"{0} unchanged": "{0} inchangé(s)",
+	"{0} skipped": "{0} ignoré(s)",
+	"{0} failed": "{0} en échec",
+	"Show Output": "Afficher la sortie",
+	"Formatted {0} file(s): {1}": "{0} fichier(s) traité(s) : {1}",
+	"Formatting cancelled: {0}": "Formatage annulé : {0}",
+	"Select a folder to format.": "Sélectionnez un dossier à formater.",
+	"Formatting git-tracked files...": "Formatage des fichiers suivis par git..."
+}

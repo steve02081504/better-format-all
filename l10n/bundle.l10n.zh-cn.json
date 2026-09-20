@@ -1,0 +1,17 @@
+{
+	"{0} is not inside a git repository.": "{0} 不在 git 仓库中。",
+	"Nothing to format under {0}.": "{0} 下没有需要格式化的文件。",
+	"Nothing to format.": "没有需要格式化的文件。",
+	"{0} ({1}/{2})": "{0}（{1}/{2}）",
+	"Failed to format {0}: {1}": "格式化 {0} 失败：{1}",
+	"Recorded {0} as the format baseline for {1}.": "已记录 {0} 为 {1} 的格式化基线。",
+	"{0} formatted": "{0} 个已格式化",
+	"{0} unchanged": "{0} 个无变化",
+	"{0} skipped": "{0} 个已跳过",
+	"{0} failed": "{0} 个失败",
+	"Show Output": "显示输出",
+	"Formatted {0} file(s): {1}": "已处理 {0} 个文件：{1}",
+	"Formatting cancelled: {0}": "格式化已取消：{0}",
+	"Select a folder to format.": "请选择一个要格式化的文件夹。",
+	"Formatting git-tracked files...": "正在格式化 git 跟踪的文件…"
+}

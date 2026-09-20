@@ -1,0 +1,17 @@
+{
+	"{0} is not inside a git repository.": "{0} is not inside a git repository.",
+	"Nothing to format under {0}.": "Nothing to format under {0}.",
+	"Nothing to format.": "Nothing to format.",
+	"{0} ({1}/{2})": "{0} ({1}/{2})",
+	"Failed to format {0}: {1}": "Failed to format {0}: {1}",
+	"Recorded {0} as the format baseline for {1}.": "Recorded {0} as the format baseline for {1}.",
+	"{0} formatted": "{0} formatted",
+	"{0} unchanged": "{0} unchanged",
+	"{0} skipped": "{0} skipped",
+	"{0} failed": "{0} failed",
+	"Show Output": "Show Output",
+	"Formatted {0} file(s): {1}": "Formatted {0} file(s): {1}",
+	"Formatting cancelled: {0}": "Formatting cancelled: {0}",
+	"Select a folder to format.": "Select a folder to format.",
+	"Formatting git-tracked files...": "Formatting git-tracked files..."
+}
