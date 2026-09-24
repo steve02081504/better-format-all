@@ -125,6 +125,102 @@ suite('better-format-all planner', () => {
 		}
 	})
 
+	test('compares against the merge base when the baseline sits on another fork', async () => {
+		const { dir } = makeRepo({ 'base.txt': 'base', 'sub/x.txt': 'x' })
+		try {
+			const root = commit(dir, 'base')
+			// forkA 是基线所在的分叉，只改了 base.txt。
+			git(dir, 'checkout', '-q', '-b', 'forkA')
+			fs.writeFileSync(path.join(dir, 'base.txt'), 'a-change')
+			const baseline = commit(dir, 'a-change')
+			// forkB 是当前分叉，从共同祖先出来只改了 sub/x.txt。
+			git(dir, 'checkout', '-q', root)
+			git(dir, 'checkout', '-q', '-b', 'forkB')
+			fs.writeFileSync(path.join(dir, 'sub', 'x.txt'), 'b-change')
+			commit(dir, 'b-change')
+
+			const repoRoot = await getRepoRoot(dir)
+			const state = recordFormatted(emptyState(), '', baseline)
+			const { files } = await planFiles({ repoRoot, state, target: repoRoot })
+			// 直接 `git diff <基线>` 会把 base.txt（forkA 独有改动）也算进来；正确结果只认当前分叉的改动。
+			assert.deepStrictEqual(relatives(repoRoot, files), ['sub/x.txt'])
+		}
+		finally {
+			removeDir(dir)
+		}
+	})
+
+	test('does not reformat everything after a metadata-only rewrite of an old commit', async () => {
+		const { dir } = makeRepo({ 'root.txt': 'root' })
+		try {
+			commit(dir, 'root')
+			fs.writeFileSync(path.join(dir, 'x.txt'), 'x')
+			commit(dir, 'reword me')
+			fs.writeFileSync(path.join(dir, 'y.txt'), 'y')
+			commit(dir, 'second')
+			fs.writeFileSync(path.join(dir, 'z.txt'), 'z')
+			const baseline = commit(dir, 'baseline commit')
+			fs.writeFileSync(path.join(dir, 'w.txt'), 'w')
+			commit(dir, 'fourth')
+
+			// 只改三年前那条 commit 的标题，重建它并把它之后的提交 rebase 过去。祖先链 SHA 全变，
+			// 但内容一个字节没动。
+			const old = git(dir, 'rev-parse', 'HEAD~3').trim()
+			const tree = git(dir, 'rev-parse', `${old}^{tree}`).trim()
+			const parent = git(dir, 'rev-parse', `${old}^`).trim()
+			const reworded = git(dir, 'commit-tree', tree, '-p', parent, '-m', 'reworded title').trim()
+			git(dir, 'rebase', '--onto', reworded, old, 'HEAD')
+
+			const repoRoot = await getRepoRoot(dir)
+			const state = recordFormatted(emptyState(), '', baseline)
+			const { files } = await planFiles({ repoRoot, state, target: repoRoot })
+			// 合并基点会退到被改 commit 的父提交，若只按合并基点比会把 x/y/z 也重算；正确结果只认基线之后真正改动的 w.txt。
+			assert.deepStrictEqual(relatives(repoRoot, files), ['w.txt'])
+		}
+		finally {
+			removeDir(dir)
+		}
+	})
+
+	test('recovers a gc-ed baseline from the remote instead of reformatting everything', async () => {
+		const { dir } = makeRepo({ 'root.txt': 'root' })
+		const remote = fs.mkdtempSync(path.join(os.tmpdir(), 'better-format-all-remote-'))
+		try {
+			commit(dir, 'root')
+			fs.writeFileSync(path.join(dir, 'x.txt'), 'x')
+			const baseline = commit(dir, 'baseline')
+			const baselineParent = git(dir, 'rev-parse', 'HEAD^').trim()
+			const baselineTree = git(dir, 'rev-parse', `${baseline}^{tree}`).trim()
+			fs.writeFileSync(path.join(dir, 'y.txt'), 'y')
+			const tip = commit(dir, 'after baseline')
+			const tipTree = git(dir, 'rev-parse', `${tip}^{tree}`).trim()
+
+			// 远端先留一份带基线的历史，再把本地基线 commit 改标题后 reset 过去并 gc 掉旧对象，
+			// 模拟「基线已被回收，只剩远端还留着」的旧记录。
+			git(dir, 'clone', '-q', '--bare', dir, remote)
+			git(dir, 'remote', 'add', 'origin', remote)
+
+			const reworded = git(dir, 'commit-tree', baselineTree, '-p', baselineParent, '-m', 'reworded').trim()
+			const rewrittenTip = git(dir, 'commit-tree', tipTree, '-p', reworded, '-m', 'after baseline').trim()
+			git(dir, 'reset', '--hard', rewrittenTip)
+			git(dir, 'reflog', 'expire', '--expire=now', '--all')
+			git(dir, 'gc', '--prune=now', '--quiet')
+			assert.throws(() => git(dir, 'cat-file', '-e', `${baseline}^{commit}`), 'baseline should be gc-ed locally')
+
+			const repoRoot = await getRepoRoot(dir)
+			const state = recordFormatted(emptyState(), '', baseline)
+			const { files } = await planFiles({ repoRoot, state, target: repoRoot })
+			// 取回基线后只按真实内容改动选择，而不是因为没有基线就整组重算。
+			assert.deepStrictEqual(relatives(repoRoot, files), ['y.txt'])
+			// 取回的基线被 ref 钉住，下次不会再被回收。
+			assert.match(git(dir, 'for-each-ref', '--format=%(refname)', 'refs/better-format-all/'), new RegExp(baseline))
+		}
+		finally {
+			removeDir(dir)
+			removeDir(remote)
+		}
+	})
+
 	test('honours includeUntracked=false and limits the walk to the target folder', async () => {
 		const { dir } = makeRepo({ 'sub/a.txt': 'a', 'other/b.txt': 'b' })
 		try {

@@ -91,6 +91,12 @@ suite('better-format-all extension', () => {
 			assert.strictEqual(state.version, 1)
 			assert.deepStrictEqual(state.subpaths, { '': head })
 
+			// 基线 commit 被 ref 钉住，amend/rebase 后不会被 gc 回收。
+			assert.match(
+				git(dir, 'for-each-ref', '--format=%(refname)', 'refs/better-format-all/'),
+				new RegExp(head)
+			)
+
 			// 打开过的文件都已关闭。
 			for (const name of ['a.txt', 'sub/b.txt', 'untracked.txt']) {
 				const uri = vscode.Uri.file(path.join(dir, name)).toString()

@@ -1,7 +1,7 @@
 import * as vscode from 'vscode'
 
 import { formatFile } from './lib/formatRunner.mjs'
-import { getAbsoluteGitDir, getHeadSha, getRepoRoot } from './lib/git.mjs'
+import { getAbsoluteGitDir, getHeadSha, getRepoRoot, syncBaselineRefs } from './lib/git.mjs'
 import { planFiles } from './lib/planner.mjs'
 import { DEFAULT_STATE_FILE, readState, recordFormatted, writeState } from './lib/state.mjs'
 
@@ -144,7 +144,11 @@ async function formatTarget(plan, progress, token, summary, counter) {
 
 	const sha = await getHeadSha(repoRoot)
 	if (sha) {
-		writeState(gitDir, recordFormatted(state, relTarget, sha), stateFile)
+		const next = recordFormatted(state, relTarget, sha)
+		writeState(gitDir, next, stateFile)
+		// 用 ref 把基线 commit 钉住，否则 amend/rebase 后它变成不可达对象，会被 gc 回收，
+		// 下次规划就只能整组重算。
+		await syncBaselineRefs(repoRoot, Object.values(next.subpaths))
 		getOutputChannel().appendLine(t('Recorded {0} as the format baseline for {1}.', sha.slice(0, 12), label))
 	}
 }
